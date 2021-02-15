@@ -64,7 +64,7 @@ def update_images():
     cleanup_database()
 
 
-schedule.every().minute.do(image_run)
+schedule.every(5).minutes.do(image_run)
 x = threading.Thread(target=schedule_check, daemon=True)
 x.start()
 
