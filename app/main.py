@@ -29,6 +29,8 @@ def create_database():
     for i in range(0,image_count):
         save_image(image, f'takapuna{i}.png')
 
+create_database()
+
 def schedule_check():
     while True:
         schedule.run_pending()
