@@ -4,7 +4,6 @@ import base64
 import requests
 
 from flask import Flask, abort, jsonify, request
-from flask_cors import CORS
 
 from app.config import Config
 
@@ -19,11 +18,10 @@ app = Flask(__name__)
 # set environment variable
 app.config["ENV"] = Config.DEPLOY_ENV
 
-CORS(app)
 times = []
 image_counter = 0
 image_count = 20
-image_path = Path('images')
+image_path = Path.cwd() / 'images'
 
 def create_database():
     image = get_image()
