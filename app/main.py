@@ -34,12 +34,18 @@ def schedule_check():
 def image_run():
     try:
         update_images()
-    except:
+    except Exception as e:
+        print('hit exepction!')
+        print(e)
         pass
 
 def get_image():
     r = requests.get('http://www.windsurf.co.nz/webcams/takapuna.jpg')
-    return r.content
+    if r.status_code is 200:
+        return r.content
+    else:
+        print(r.status_code)
+        print(r.text)
 
 def save_image(image, filename):
     f = open(image_path / filename, 'wb')  # first argument is the filename
@@ -77,7 +83,7 @@ def resource_not_found(e):
 def health():
     return json.dumps({"status": "healthy"})
 
-@app.route("/takapuna-cam")
+@app.route("/")
 def cam():
     return create_page_from_images( get_latest_images() )
 
