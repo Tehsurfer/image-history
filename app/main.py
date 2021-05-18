@@ -21,15 +21,20 @@ app.config["ENV"] = Config.DEPLOY_ENV
 
 CORS(app)
 times = []
-image_count = 0
+image_counter = 0
+image_count = 20
 image_path = Path('images')
 
+def create_database():
+    image = get_image()
+    save_image(image, f'takapuna{image_counter}.png')
+    for i in range(0,image_count):
+        save_image(image, f'takapuna{i}.png')
 
 def schedule_check():
     while True:
         schedule.run_pending()
         time.sleep(5)
-
 
 def image_run():
     try:
@@ -52,22 +57,11 @@ def save_image(image, filename):
     f.write(image)
     f.close()
 
-def create_filename():
-    global image_count
-    name = f'takapuna{image_count}.png'
-    image_count += 1
-    return name
-
-def cleanup_database():
-    for name in os.listdir('images'):
-        if name == f'takapuna{image_count-20}.png':
-            os.remove(image_path / name)
-
 def update_images():
+    global image_counter
     image = get_image()
-    name = create_filename()
-    save_image(image, name)
-    cleanup_database()
+    save_image(image, f'takapuna{image_counter}.png')
+    image_counter += 1
 
 
 schedule.every(5).minutes.do(image_run)
@@ -88,12 +82,8 @@ def cam():
     return create_page_from_images( get_latest_images() )
 
 def get_latest_images():
-    global image_count
-    i = image_count - 40
-    if i < 0:
-        i = 0
     image_list = []
-    while i <= image_count:
+    for i in range(0,image_count):
         data_uri = base64.b64encode(open( image_path / f'takapuna{i}.png', 'rb').read()).decode('utf-8')
         img_tag = '<img src="data:image/png;base64,{0}">'.format(data_uri)
         image_list.append(img_tag)
